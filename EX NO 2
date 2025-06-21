@@ -1,0 +1,83 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
+import string
+import nltk
+from collections import Counter
+
+# Step 1: Load dataset from URL (no local file needed)
+url = 'https://raw.githubusercontent.com/justmarkham/pycon-2016-tutorial/master/data/sms.tsv'
+
+# Step 2: Read the tab-separated file
+df = pd.read_csv(url, sep='\t', header=None, names=['label', 'message'])
+
+# Step 3: Download stopwords
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+
+# Step 4: Explore dataset
+print("✅ Dataset Loaded Successfully")
+print(df.head())
+print("\nShape:", df.shape)
+print("\nClass Distribution:\n", df['label'].value_counts())
+
+# Step 5: Add message length
+df['message_length'] = df['message'].apply(len)
+
+# Plot: Spam vs Ham
+sns.countplot(x='label', data=df, palette='Set2')
+plt.title('Spam vs Ham Distribution')
+plt.show()
+
+# Plot: Message length distribution
+sns.histplot(data=df, x='message_length', hue='label', bins=50, kde=True)
+plt.title('Message Length Distribution')
+plt.xlabel('Message Length')
+plt.show()
+
+# Step 6: Text cleaning
+def clean_text(text):
+    text = text.lower()
+    text = "".join([ch for ch in text if ch not in string.punctuation])
+    words = text.split()
+    stop_words = stopwords.words('english')
+    return [word for word in words if word not in stop_words]
+
+# Generate word lists
+spam_words = []
+ham_words = []
+
+for msg in df[df['label'] == 'spam']['message']:
+    spam_words.extend(clean_text(msg))
+
+for msg in df[df['label'] == 'ham']['message']:
+    ham_words.extend(clean_text(msg))
+
+# Word frequency
+print("\nTop 10 spam words:", Counter(spam_words).most_common(10))
+print("Top 10 ham words:", Counter(ham_words).most_common(10))
+
+# Word clouds
+spam_wc = WordCloud(width=600, height=400, background_color='white').generate(" ".join(spam_words))
+plt.imshow(spam_wc, interpolation='bilinear')
+plt.axis('off')
+plt.title('Word Cloud - Spam')
+plt.show()
+
+ham_wc = WordCloud(width=600, height=400, background_color='white').generate(" ".join(ham_words))
+plt.imshow(ham_wc, interpolation='bilinear')
+plt.axis('off')
+plt.title('Word Cloud - Ham')
+plt.show()
+
+# Boxplot of message lengths
+sns.boxplot(x='label', y='message_length', data=df, palette='coolwarm')
+plt.title('Message Length by Label')
+plt.show()
+
+# Summary stats
+print("\n📊 Average spam message length:", df[df['label'] == 'spam']['message_length'].mean())
+print("📊 Average ham message length:", df[df['label'] == 'ham']['message_length'].mean())
+
