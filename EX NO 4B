@@ -1,0 +1,23 @@
+import pandas as pd
+
+# Sample dataset
+data = {
+    'Employee': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    'Department': ['HR', 'IT', 'HR', 'Finance', 'IT', 'Finance', 'HR', 'IT'],
+    'Hours_Worked': [40, 45, 38, 42, 50, 48, 41, 49]
+}
+
+df = pd.DataFrame(data)
+
+# Step 1: Group by Department
+grouped = df.groupby('Department')['Hours_Worked'].agg(['sum', 'mean']).reset_index()
+
+# Step 2: Create pivot summary
+pivot = pd.pivot_table(df, values='Hours_Worked', index='Department', aggfunc='sum')
+
+# Step 3: Identify department with highest average hours
+max_avg_department = grouped.loc[grouped['mean'].idxmax(), 'Department']
+
+print("Pivot Table (Total Hours):\n", pivot)
+print("\nGrouped Summary:\n", grouped)
+print("\nDepartment with Highest Average Working Hours:", max_avg_department)
