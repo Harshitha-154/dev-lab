@@ -1,0 +1,81 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create data
+data = {
+    'ID': range(1, 11),
+    'Age': np.random.randint(18, 65, size=10),
+    'Income': np.random.randint(30000, 90000, size=10),
+    'Gender': ['Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Male'],
+    'Education': ['High School', 'Bachelor', 'Master', 'PhD', 'Bachelor', 'Master', 'Bachelor', 'PhD', 'High School', 'Master']
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Display first few rows
+print(df.head())
+
+# Summary statistics
+print(df.describe())
+
+# Check for missing values
+print(df.isnull().sum())
+
+# Unique values in categorical columns
+print("Unique Genders:", df['Gender'].unique())
+print("Unique Education Levels:", df['Education'].unique())
+
+# Select specific columns
+selected_columns = df[['Age', 'Income']]
+print(selected_columns.head())
+
+# Filter rows: Age > 30
+filtered_data = df[df['Age'] > 30]
+print("Filtered (Age > 30):")
+print(filtered_data)
+
+# Filter rows: Male with Master degree
+filtered_rows = df[(df['Gender'] == 'Male') & (df['Education'] == 'Master')]
+print("Filtered (Male & Master):")
+print(filtered_rows)
+
+# Histogram of Age
+plt.figure(figsize=(8, 5))
+plt.hist(df['Age'], bins=5, edgecolor='black')
+plt.title('Age Distribution')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
+
+# Boxplot of Income
+plt.figure(figsize=(8, 5))
+plt.boxplot(df['Income'])
+plt.title('Income Distribution')
+plt.ylabel('Income')
+plt.grid(True)
+plt.show()
+
+# Bar chart of Gender
+gender_counts = df['Gender'].value_counts()
+plt.figure(figsize=(6, 4))
+gender_counts.plot(kind='bar', color='skyblue')
+plt.title('Gender Distribution')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.grid(axis='y')
+plt.show()
+
+# Pie chart of Education
+education_counts = df['Education'].value_counts()
+plt.figure(figsize=(6, 6))
+education_counts.plot(
+    kind='pie',
+    autopct='%1.1f%%',
+    colors=['gold', 'lightcoral', 'lightgreen', 'lightskyblue']
+)
+plt.title('Education Distribution')
+plt.ylabel('')
+plt.show()
