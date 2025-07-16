@@ -1,0 +1,77 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Set Seaborn style
+sns.set(style="whitegrid")
+
+# Create synthetic dataset
+data = {
+    'ID': range(1, 11),
+    'Age': np.random.randint(18, 65, size=10),
+    'Income': np.random.randint(30000, 90000, size=10),
+    'Gender': ['Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male', 'Male'],
+    'Education': ['High School', 'Bachelor', 'Master', 'PhD', 'Bachelor', 'Master', 'Bachelor', 'PhD', 'High School', 'Master']
+}
+
+df = pd.DataFrame(data)
+
+# Display dataset info
+print(df.head())
+
+# 1. Distribution of Age
+plt.figure(figsize=(8, 5))
+sns.histplot(df['Age'], kde=True, bins=5, color='skyblue')
+plt.title('Age Distribution')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.show()
+
+# 2. Boxplot of Income by Gender
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='Gender', y='Income', data=df, palette='Set2')
+plt.title('Income Distribution by Gender')
+plt.xlabel('Gender')
+plt.ylabel('Income')
+plt.show()
+
+# 3. Bar plot of average income by education level
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Education', y='Income', data=df, palette='pastel', estimator=np.mean)
+plt.title('Average Income by Education Level')
+plt.xlabel('Education')
+plt.ylabel('Average Income')
+plt.xticks(rotation=45)
+plt.show()
+
+# 4. Count plot of Gender
+plt.figure(figsize=(6, 4))
+sns.countplot(x='Gender', data=df, palette='Blues')
+plt.title('Gender Count')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.show()
+
+# 5. Count plot of Education
+plt.figure(figsize=(8, 5))
+sns.countplot(x='Education', data=df, palette='viridis')
+plt.title('Education Level Count')
+plt.xlabel('Education')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+# 6. Scatterplot: Age vs. Income colored by Gender
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='Age', y='Income', hue='Gender', style='Gender', data=df, palette='Dark2', s=100)
+plt.title('Age vs. Income by Gender')
+plt.xlabel('Age')
+plt.ylabel('Income')
+plt.grid(True)
+plt.show()
+
+# 7. Pairplot to show relationships
+sns.pairplot(df, hue='Gender', vars=['Age', 'Income'], palette='husl')
+plt.suptitle('Pairplot of Age and Income by Gender', y=1.02)
+plt.show()
